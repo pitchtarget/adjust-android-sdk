@@ -36,6 +36,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.json.JSONObject;
 
 public class RequestHandler extends HandlerThread {
     private static final int CONNECTION_TIMEOUT = Constants.ONE_MINUTE;
@@ -177,7 +178,7 @@ public class RequestHandler extends HandlerThread {
 
         String language = Locale.getDefault().getLanguage();
         request.addHeader("User-Agent", activityPackage.getUserAgent());
-        request.addHeader("Client-SDK", activityPackage.getClientSdk());
+        request.addHeader("Client-Sdk", activityPackage.getClientSdk());
         request.addHeader("Accept-Language", language);
 
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -185,6 +186,11 @@ public class RequestHandler extends HandlerThread {
             NameValuePair pair = new BasicNameValuePair(entity.getKey(), entity.getValue());
             pairs.add(pair);
         }
+        
+        Map <String, String> deviceData = Util.getDeviceData();
+        JSONObject devicePayload = new JSONObject(deviceData);
+        NameValuePair devicePayloadPair = new BasicNameValuePair("device_data", devicePayload.toString());
+        pairs.add(devicePayloadPair);
 
         UrlEncodedFormEntity entity = new UrlEncodedFormEntity(pairs);
         entity.setContentType(URLEncodedUtils.CONTENT_TYPE);

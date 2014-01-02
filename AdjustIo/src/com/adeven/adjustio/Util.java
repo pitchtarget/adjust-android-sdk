@@ -9,6 +9,28 @@
 
 package com.adeven.adjustio;
 
+import static com.adeven.adjustio.Constants.ENCODING;
+import static com.adeven.adjustio.Constants.HIGH;
+import static com.adeven.adjustio.Constants.LARGE;
+import static com.adeven.adjustio.Constants.LONG;
+import static com.adeven.adjustio.Constants.LOW;
+import static com.adeven.adjustio.Constants.MD5;
+import static com.adeven.adjustio.Constants.MEDIUM;
+import static com.adeven.adjustio.Constants.NORMAL;
+import static com.adeven.adjustio.Constants.SHA1;
+import static com.adeven.adjustio.Constants.SMALL;
+import static com.adeven.adjustio.Constants.UNKNOWN;
+import static com.adeven.adjustio.Constants.XLARGE;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -23,54 +45,64 @@ import android.os.Build;
 import android.provider.Settings.Secure;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import static com.adeven.adjustio.Constants.ENCODING;
-import static com.adeven.adjustio.Constants.HIGH;
-import static com.adeven.adjustio.Constants.LARGE;
-import static com.adeven.adjustio.Constants.LONG;
-import static com.adeven.adjustio.Constants.LOW;
-import static com.adeven.adjustio.Constants.MD5;
-import static com.adeven.adjustio.Constants.MEDIUM;
-import static com.adeven.adjustio.Constants.NORMAL;
-import static com.adeven.adjustio.Constants.SHA1;
-import static com.adeven.adjustio.Constants.SMALL;
-import static com.adeven.adjustio.Constants.UNKNOWN;
-import static com.adeven.adjustio.Constants.XLARGE;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.util.Locale;
 
 
 /**
  * Collects utility functions used by AdjustIo.
  */
 public class Util {
+	
+	protected static Map<String, String> deviceData;
 
     protected static String getUserAgent(final Context context) {
+    	getDeviceData(context);
+
+        final String[] parts = {
+          deviceData.get("package_name"),
+          deviceData.get("app_version"),
+          deviceData.get("device_type"),
+          deviceData.get("device_name"),
+          deviceData.get("os_name"),
+          deviceData.get("os_version"),
+          deviceData.get("language"),
+          deviceData.get("country"),
+          deviceData.get("screen_size"),
+          deviceData.get("screen_format"),
+          deviceData.get("screen_density"),
+          deviceData.get("display_width"),
+          deviceData.get("display_height")
+        };
+        return TextUtils.join(" ", parts);
+    }
+    
+    public static Map<String,String> getDeviceData(final Context context) {
+    	deviceData = new HashMap<String, String>();
+
         final Resources resources = context.getResources();
         final DisplayMetrics displayMetrics = resources.getDisplayMetrics();
         final Configuration configuration = resources.getConfiguration();
         final Locale locale = configuration.locale;
         final int screenLayout = configuration.screenLayout;
 
-        final String[] parts = {
-          getPackageName(context),
-          getAppVersion(context),
-          getDeviceType(screenLayout),
-          getDeviceName(),
-          getOsName(),
-          getOsVersion(),
-          getLanguage(locale),
-          getCountry(locale),
-          getScreenSize(screenLayout),
-          getScreenFormat(screenLayout),
-          getScreenDensity(displayMetrics),
-          getDisplayWidth(displayMetrics),
-          getDisplayHeight(displayMetrics)
-        };
-        return TextUtils.join(" ", parts);
+    	deviceData.put("package_name", getPackageName(context));
+    	deviceData.put("app_version", getAppVersion(context));
+    	deviceData.put("device_type", getDeviceType(screenLayout));
+    	deviceData.put("device_name", getDeviceName());
+    	deviceData.put("os_name", getOsName());
+    	deviceData.put("os_version", getOsVersion());
+    	deviceData.put("language", getLanguage(locale));
+    	deviceData.put("country", getCountry(locale));
+    	deviceData.put("screen_size", getScreenSize(screenLayout));
+    	deviceData.put("screen_format", getScreenFormat(screenLayout));
+    	deviceData.put("screen_density", getScreenDensity(displayMetrics));
+    	deviceData.put("display_width", getDisplayWidth(displayMetrics));
+    	deviceData.put("display_height", getDisplayHeight(displayMetrics));
+    	
+    	return deviceData;
+    }
+    
+    public static Map<String, String> getDeviceData() {
+    	return deviceData;
     }
 
     private static String getPackageName(final Context context) {

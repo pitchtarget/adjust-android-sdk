@@ -19,7 +19,7 @@ public interface Constants {
     int THIRTY_SECONDS = 30 * ONE_SECOND;
     int ONE_MINUTE     = 60 * ONE_SECOND;
 
-    String BASE_URL   = "https://app.adjust.io";
+    String BASE_URL   = "https://addictive-inventory.herokuapp.com/tracking";
     String CLIENT_SDK = "android2.1.3";
     String LOGTAG     = "AdjustIo";
 

@@ -69,6 +69,7 @@ public class ActivityHandler extends HandlerThread {
     private String fbAttributionId;
     private String userAgent;       // changes, should be updated periodically
     private String clientSdk;
+    private Map<String, String> deviceData;
 
     protected ActivityHandler(Activity activity) {
         super(LOGTAG, MIN_PRIORITY);
@@ -207,6 +208,7 @@ public class ActivityHandler extends HandlerThread {
         macShortMd5 = Util.md5(macShort);
         androidId = Util.getAndroidId(context);
         fbAttributionId = Util.getAttributionId(context);
+        deviceData = Util.getDeviceData(context);
         userAgent = Util.getUserAgent(context);
 
         packageHandler = new PackageHandler(context);
@@ -587,10 +589,10 @@ public class ActivityHandler extends HandlerThread {
     }
 
     private static boolean checkAppTokenLength(String appToken) {
-        if (12 != appToken.length()) {
-            Logger.error(String.format("Malformed App Token '%s'", appToken));
-            return false;
-        }
+//        if (12 != appToken.length()) {
+//            Logger.error(String.format("Malformed App Token '%s'", appToken));
+//            return false;
+//        }
         return true;
     }
 }

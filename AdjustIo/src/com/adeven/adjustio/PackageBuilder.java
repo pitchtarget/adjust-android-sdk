@@ -159,10 +159,10 @@ public class PackageBuilder {
     }
 
     private boolean isEventTokenValid() {
-        if (6 != eventToken.length()) {
-            Logger.error(String.format("Malformed Event Token '%s'", eventToken));
-            return false;
-        }
+//        if (6 != eventToken.length()) {
+//            Logger.error(String.format("Malformed Event Token '%s'", eventToken));
+//            return false;
+//        }
         return true;
     }
 
